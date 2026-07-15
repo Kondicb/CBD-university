@@ -1,0 +1,145 @@
+services:
+
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - fakultet-net
+
+
+  naming-server:
+    build: ./naming-server
+    container_name: naming-server
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    networks:
+      - fakultet-net
+
+
+  academic-service:
+    build: ./academic-service
+    container_name: academic-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/academic_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - fakultet-net
+
+
+  users-service:
+    build: ./users-service
+    container_name: users-service
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/users_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - fakultet-net
+
+
+  scheduling-service:
+    build: ./scheduling-service
+    container_name: scheduling-service
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/scheduling_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - fakultet-net
+
+
+  exams-service:
+    build: ./exams-service
+    container_name: exams-service
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/exams_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+      naming-server:
+        condition: service_started
+    networks:
+      - fakultet-net
+
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka/
+      EUREKA_INSTANCE_PREFERIPADDRESS: "true"
+    depends_on:
+      naming-server:
+        condition: service_started
+      academic-service:
+        condition: service_started
+      users-service:
+        condition: service_started
+      scheduling-service:
+        condition: service_started
+      exams-service:
+        condition: service_started
+    networks:
+      - fakultet-net
+
+networks:
+  fakultet-net:
+    driver: bridge
+
+volumes:
+  mysql-data:

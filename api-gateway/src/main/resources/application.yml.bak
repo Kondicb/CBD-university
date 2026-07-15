@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: academic-service
+          uri: lb://academic-service
+          predicates:
+            - Path=/api/departmani/**,/api/smerovi/**,/api/predmeti/**,/api/materijali/**
+
+        - id: users-service
+          uri: lb://users-service
+          predicates:
+            - Path=/api/korisnici/**,/api/studenti/**,/api/profesori/**,/api/sluska/**
+
+        - id: scheduling-service
+          uri: lb://scheduling-service
+          predicates:
+            - Path=/api/ucionice/**,/api/termini/**,/api/semestri/**,/api/izvodjenje/**
+
+        - id: exams-service
+          uri: lb://exams-service
+          predicates:
+            - Path=/api/ispiti/**,/api/zadaci/**,/api/izvestaji/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+
+jwt:
+  secret: OvoJeVrloTajniKljucZaFakultetskiProjekatMinimum256BitovaDuzine123456
+  expiration-ms: 3600000
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    com.fakultet.apigateway: DEBUG
