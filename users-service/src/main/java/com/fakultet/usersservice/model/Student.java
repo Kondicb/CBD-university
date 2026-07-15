@@ -31,7 +31,6 @@ public class Student {
     @Column(name = "godina_upisa", nullable = false)
     private Integer godinaUpisa;
 
-    // logicka referenca -> academic-service.smer (bez FK, drugi servis)
     @Column(name = "smer_id", nullable = false)
     private Integer smerId;
 }

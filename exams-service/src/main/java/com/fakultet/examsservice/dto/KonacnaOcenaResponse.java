@@ -12,7 +12,7 @@ import lombok.Setter;
 public class KonacnaOcenaResponse {
     private Integer studentId;
     private Integer predmetId;
-    private Integer ocenaIspita;       // null ako jos nije izasao/upisan
+    private Integer ocenaIspita;
     private Integer ukupnoBodovaZadaci;
     private String napomena;
 }

@@ -43,7 +43,6 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Feign - za komunikaciju sa academic-service i users-service -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -55,8 +54,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Resava "ByteBuddyInterceptor" Jackson gresku pri serijalizaciji
-             JPA entiteta sa lazy (@ManyToOne LAZY) vezama -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate6</artifactId>

@@ -43,15 +43,13 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Feign - za komunikaciju sa academic-service -->
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- samo BCrypt enkoder, ne ceo Spring Security starter
-             (izbegavamo da security filter automatski zakljuca sve endpoint-e -
-             autentifikacija/autorizacija ide kroz API Gateway) -->
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
@@ -63,8 +61,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Resava "ByteBuddyInterceptor" Jackson gresku pri serijalizaciji
-             JPA entiteta sa lazy (@ManyToOne LAZY) vezama -->
+
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate6</artifactId>
